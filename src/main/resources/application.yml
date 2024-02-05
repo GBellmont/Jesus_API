@@ -18,3 +18,8 @@ spring:
 
 key:
   final: ${KEY_FINAL:final}
+
+rest-template:
+  timeout:
+    connect: ${REST_TIMEOUT_CONNECT:5000} # 5 segundos em milissegundos
+    read: ${REST_TIMEOUT_READ:15000} # 15 segundos em milissegundos
