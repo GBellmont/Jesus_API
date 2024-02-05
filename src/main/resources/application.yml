@@ -1,0 +1,20 @@
+logging:
+  level:
+    org.hibernate.SQL: ${NIVEL_LOG_SQL:INFO}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${NIVEL_LOG_BASYC_BYNDER:INFO}
+    br.com.luan.barcella.jesus.api: ${NIVEL_LOG_API:INFO}
+    org.springframework.boot: ${NIVEL_LOG_SPRING:INFO}
+
+server:
+  port: ${PORTA_PADRAO:8090}
+  error:
+    include-message: ${INCLUIR_MENSAGENS:always}
+  servlet:
+    context-path: ${API_PATH:/jesus-api}
+
+spring:
+  messages:
+    basename: i18n/messages
+
+key:
+  final: ${KEY_FINAL:final}
