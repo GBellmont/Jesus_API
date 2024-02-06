@@ -23,3 +23,18 @@ rest-template:
   timeout:
     connect: ${REST_TIMEOUT_CONNECT:5000} # 5 segundos em milissegundos
     read: ${REST_TIMEOUT_READ:15000} # 15 segundos em milissegundos
+
+cache:
+  ttl:
+    livros:
+      consulta-livros: ${TTL_CACHE_CONSULTA_LIVROS:86400} # 1 dia em segundos
+
+redis:
+  cache:
+    host: ${REDIS_CACHE_HOST:localhost}
+    password: ${REDIS_CACHE_PASSWORD:}
+    port: ${REDIS_CACHE_PORT:6379}
+
+integration:
+  biblia-digital:
+    url: ${URL_BIBLIA_DIGITAL:https://www.abibliadigital.com.br/api}
