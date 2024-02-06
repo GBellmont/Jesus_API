@@ -4,8 +4,6 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
