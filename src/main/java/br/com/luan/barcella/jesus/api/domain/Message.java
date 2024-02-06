@@ -8,7 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum Message {
 
-    FALHA_INESPERADA("falha.inesperada");
+    FALHA_INESPERADA("falha.inesperada"),
+    SERVICO_INDISPONIVEL("servico.indisponivel");
 
     private final String message;
 
