@@ -9,6 +9,8 @@ import lombok.Getter;
 public enum Message {
 
     FALHA_INESPERADA("falha.inesperada"),
+    INDEX_INVALIDO("index.invalido"),
+    NUMERO_ITENS_INVALIDO("numero-itens.invalido"),
     SERVICO_INDISPONIVEL("servico.indisponivel");
 
     private final String message;

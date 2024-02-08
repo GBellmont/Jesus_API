@@ -36,20 +36,26 @@ Após isto alguns comandos que podemser úteis:
 
 - **Response**:
 ```json
-[
-    {
-        "abreviacao": {
-            "portugues": "gn",
-            "ingles": "gn"
+{
+    "index": 0,
+    "numeroItens": 3,
+    "itens": [
+        {
+            "abreviacao": {
+                "portugues": "gn",
+                "ingles": "gn"
+            },
+            "autor": "Moisés",
+            "numeroCapitulos": 50,
+            "grupo": "Pentateuco",
+            "testamento": "VT",
+            "nome": "Gênesis"
         },
-        "autor": "Moisés",
-        "numeroCapitulos": 50,
-        "grupo": "Pentateuco",
-        "testamento": "VT",
-        "nome": "Gênesis"
-    },
-    {...}
-]
+        {...}
+    ],
+    "primeiraPagina": true,
+    "ultimaPagina": false
+}
 ```
 
 - Diagrama:
