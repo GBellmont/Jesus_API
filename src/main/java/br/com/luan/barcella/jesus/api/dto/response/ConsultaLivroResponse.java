@@ -11,10 +11,10 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-public final class ConsultaLivrosResponse implements Serializable {
+public final class ConsultaLivroResponse implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -1526852217327658393L;
+    private static final long serialVersionUID = 2667061750099381350L;
 
     @ToString.Include
     private AbreviacaoResponse abreviacao;
@@ -25,13 +25,16 @@ public final class ConsultaLivrosResponse implements Serializable {
     @ToString.Include
     private Integer numeroCapitulos;
 
+    @ToString.Exclude
+    private String comentario;
+
     @ToString.Include
     private String grupo;
 
     @ToString.Include
-    private Testamento testamento;
+    private String nome;
 
     @ToString.Include
-    private String nome;
+    private Testamento testamento;
 
 }

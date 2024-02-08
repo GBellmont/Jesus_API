@@ -1,5 +1,6 @@
 package br.com.luan.barcella.jesus.api.service.rest.integration;
 
+import static br.com.luan.barcella.jesus.api.fixture.Fixture.make;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -29,8 +30,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivroBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivrosBibliaDigitalResponse;
-import br.com.luan.barcella.jesus.api.fixture.Fixture;
 import br.com.luan.barcella.jesus.api.service.support.MessageService;
 import lombok.SneakyThrows;
 
@@ -38,6 +39,7 @@ import lombok.SneakyThrows;
 public class BibliaDigitalRestIntegrationTest {
 
     private static final String PATH_CONSULTAR_LIVROS = "/books";
+    private static final String PATH_CONSULTAR_LIVRO = "/books/%s";
 
     @InjectMocks
     private BibliaDigitalRestIntegration bibliaDigitalRestIntegration;
@@ -61,8 +63,8 @@ public class BibliaDigitalRestIntegrationTest {
     public void init() {
 
         url = randomAlphabetic(20);
-        headers = Fixture.make(new HttpHeaders());
-        body = Fixture.make(new Object());
+        headers = make(new HttpHeaders());
+        body = make(new Object());
 
         setField(bibliaDigitalRestIntegration, "restTemplate", restTemplate);
         setField(bibliaDigitalRestIntegration, "messageService", messageService);
@@ -71,7 +73,7 @@ public class BibliaDigitalRestIntegrationTest {
 
     @Test
     @SneakyThrows
-    public void annotation_rabbitHandler() {
+    public void annotationCacheableConsultarLivros() {
         Assert.assertTrue(bibliaDigitalRestIntegration.getClass()
             .getDeclaredMethod("consultarLivros")
             .isAnnotationPresent(Cacheable.class));
@@ -89,6 +91,38 @@ public class BibliaDigitalRestIntegrationTest {
             .thenReturn(entityResponse);
 
         final List<ConsultaLivrosBibliaDigitalResponse> response = bibliaDigitalRestIntegration.consultarLivros();
+
+        verify(restTemplate).exchange(eq(urlExpected), eq(httpMethodExpected), httpEntityCaptor.capture(), eq(responseClass));
+
+        final HttpEntity<?> httpEntityCaptured = httpEntityCaptor.getValue();
+        assertNotNull(httpEntityCaptured);
+        assertNull(httpEntityCaptured.getBody());
+        assertTrue(httpEntityCaptured.getHeaders().isEmpty());
+
+        assertNotNull(response);
+    }
+
+    @Test
+    @SneakyThrows
+    public void annotationCacheableConsultarLivro() {
+        Assert.assertTrue(bibliaDigitalRestIntegration.getClass()
+            .getDeclaredMethod("consultarLivro", String.class)
+            .isAnnotationPresent(Cacheable.class));
+    }
+
+    @Test
+    public void consultarLivroSucesso() {
+        final String abreviacao = randomAlphabetic(5);
+        final String urlExpected = url + String.format(PATH_CONSULTAR_LIVRO, abreviacao);
+        final HttpMethod httpMethodExpected = GET;
+        final Class<ConsultaLivroBibliaDigitalResponse> responseClass = ConsultaLivroBibliaDigitalResponse.class;
+
+        final ResponseEntity<ConsultaLivroBibliaDigitalResponse> entityResponse = ResponseEntity.ok(make(new ConsultaLivroBibliaDigitalResponse()));
+
+        when(restTemplate.exchange(eq(urlExpected), eq(httpMethodExpected), any(HttpEntity.class), eq(responseClass)))
+            .thenReturn(entityResponse);
+
+        final ConsultaLivroBibliaDigitalResponse response = bibliaDigitalRestIntegration.consultarLivro(abreviacao);
 
         verify(restTemplate).exchange(eq(urlExpected), eq(httpMethodExpected), httpEntityCaptor.capture(), eq(responseClass));
 
