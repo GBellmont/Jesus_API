@@ -90,4 +90,29 @@ Após isto alguns comandos que podemser úteis:
 ```
 
 - Diagrama:
-  ![GET-livros-abreviacao](Diagramas/GET-livros-abreviacao.png)
+![GET-livros-abreviacao](Diagramas/GET-livros-abreviacao.png)
+
+
+#### Consulta de Versões da Bíblia
+- Controller: **VersoesController**
+- Endpoint: **GET** - `htt://localhost:8090/jesus-api/versoes`
+
+- **Path Variable(s)**: NO_PATH_VARIABLES
+
+- **Response**:
+```json
+{
+  "versoes": [
+    {
+      "codigoVersao": "acf",
+      "numeroVersos": 31106,
+      "nomeCompleto": "Almeida Corrigida Fiel",
+      "descricao": "A versão Almeida Corrigida Fiel | acf (revisado segundo o novo acordo ortográfico da língua portuguesa em 2011) é uma tradução fiel do Velho Testamento em Hebraico (Massorético) e do Novo Testamento em Grego (Textus Receptus), segundo o método de tradução formal (traduzindo cada palavra e mantendo a beleza linguística)."
+    },
+    {...}
+  ]
+}
+```
+
+- Diagrama:
+![GET-versoes](Diagramas/GET-versoes.png)
