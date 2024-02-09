@@ -41,7 +41,8 @@ public class CacheConfiguration extends CachingConfigurerSupport {
     @Override
     public CacheManager cacheManager() {
         final Map<String, RedisCacheConfiguration> cacheConfiguration = setupCacheFor(
-            CacheName.CONSULTA_LIVROS
+            CacheName.CONSULTA_LIVROS,
+            CacheName.CONSULTA_LIVRO
         );
 
         return RedisCacheManager.builder(redisConnectionFactory)

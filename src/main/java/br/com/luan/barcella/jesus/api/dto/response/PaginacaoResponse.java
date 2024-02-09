@@ -21,4 +21,5 @@ public final class PaginacaoResponse <T> implements Serializable {
     private final List<T> itens;
     private final boolean primeiraPagina;
     private final boolean ultimaPagina;
+
 }

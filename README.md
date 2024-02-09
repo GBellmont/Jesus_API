@@ -29,10 +29,14 @@ Após isto alguns comandos que podemser úteis:
 ---
 
 ### Serviços
-- Controller: **LivrosController**
-- Endpoint: **GET** - `htt://localhost:8090/jesus-api/livros`
 
-- **Request**: `SEM_REQUISICAO`
+#### [PAGINADO]Consulta de Livros da Bíblia
+- Controller: **LivrosController**
+- Endpoint: **GET** - `htt://localhost:8090/jesus-api/livros/{index}/{numeroItens}`
+
+- **Path Variable(s)**:
+    - index - Integer - _Número da página_
+    - numeroItens - Integer - _Número de itens por página_
 
 - **Response**:
 ```json
@@ -60,3 +64,30 @@ Após isto alguns comandos que podemser úteis:
 
 - Diagrama:
 ![GET-livros](Diagramas/GET-livros.png)
+
+
+#### Consulta de Livro da Bíblia Por Abreviação
+- Controller: **LivrosController**
+- Endpoint: **GET** - `htt://localhost:8090/jesus-api/livros/{abreviacao}`
+
+- **Path Variable(s)**: 
+   - abreviacao - String - _Dado fornecido no endpoint de listagem de livros_ 
+
+- **Response**:
+```json
+{
+    "abreviacao": {
+        "portugues": "gn",
+        "ingles": "gn"
+    },
+    "autor": "Moisés",
+    "numeroCapitulos": 50,
+    "comentario": "Autor: Uma vez que este livro anônimo integra o Pentateuco unificado,...",
+    "grupo": "Pentateuco",
+    "nome": "Gênesis",
+    "testamento": "VT"
+}
+```
+
+- Diagrama:
+  ![GET-livros-abreviacao](Diagramas/GET-livros-abreviacao.png)
