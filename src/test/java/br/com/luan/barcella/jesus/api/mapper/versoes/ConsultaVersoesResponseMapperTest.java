@@ -15,8 +15,7 @@ import org.junit.Test;
 
 import br.com.luan.barcella.jesus.api.domain.VersaoBiblia;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
-import br.com.luan.barcella.jesus.api.dto.response.ConsultaVersoesResponse;
-import br.com.luan.barcella.jesus.api.dto.response.ConsultaVersoesResponse.VersaoResponse;
+import br.com.luan.barcella.jesus.api.dto.response.VersaoResponse;
 
 public class ConsultaVersoesResponseMapperTest {
 
@@ -24,14 +23,14 @@ public class ConsultaVersoesResponseMapperTest {
 
     @Test
     public void deveRetornarNullQuandoConsultaVersoesBibliaDigitalResponseListForNull() {
-        final ConsultaVersoesResponse response = CONSULTA_VERSOES_RESPONSE_MAPPER.apply(null);
+        final List<VersaoResponse> response = CONSULTA_VERSOES_RESPONSE_MAPPER.apply(null);
 
         assertNull(response);
     }
 
     @Test
     public void deveRetornarNullQuandoConsultaVersoesBibliaDigitalResponseListForVazia() {
-        final ConsultaVersoesResponse response = CONSULTA_VERSOES_RESPONSE_MAPPER.apply(new ArrayList<>());
+        final List<VersaoResponse> response = CONSULTA_VERSOES_RESPONSE_MAPPER.apply(new ArrayList<>());
 
         assertNull(response);
     }
@@ -47,15 +46,14 @@ public class ConsultaVersoesResponseMapperTest {
             return response;
         }, 1, 4);
 
-        final ConsultaVersoesResponse response = CONSULTA_VERSOES_RESPONSE_MAPPER.apply(bibliaDigitalResponses);
+        final List<VersaoResponse> response = CONSULTA_VERSOES_RESPONSE_MAPPER.apply(bibliaDigitalResponses);
 
         assertNotNull(response);
-        assertNotNull(response.getVersoes());
-        assertEquals(bibliaDigitalResponses.size(), response.getVersoes().size());
-        assertVersaoResponse(response.getVersoes(), bibliaDigitalResponses);
+        assertEquals(bibliaDigitalResponses.size(), response.size());
+        assertVersaoResponse(bibliaDigitalResponses, response);
     }
 
-    private void assertVersaoResponse(final List<VersaoResponse> responses, final List<ConsultaVersoesBibliaDigitalResponse> expected) {
+    private void assertVersaoResponse(final List<ConsultaVersoesBibliaDigitalResponse> expected, final List<VersaoResponse> responses) {
         for (int i = 0; i < expected.size(); i++) {
             final VersaoBiblia versao = fromCodigoBibliaDigital(expected.get(i).getCodigoVersao());
 

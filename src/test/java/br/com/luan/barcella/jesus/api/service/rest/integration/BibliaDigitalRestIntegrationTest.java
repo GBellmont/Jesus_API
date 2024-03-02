@@ -2,6 +2,9 @@ package br.com.luan.barcella.jesus.api.service.rest.integration;
 
 import static br.com.luan.barcella.jesus.api.fixture.Fixture.make;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.apache.http.entity.ContentType.APPLICATION_JSON;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,6 +12,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -40,6 +46,8 @@ import lombok.SneakyThrows;
 @RunWith(MockitoJUnitRunner.class)
 public class BibliaDigitalRestIntegrationTest {
 
+    private static final String BEARER_TOKEN = "Bearer ";
+
     private static final String PATH_CONSULTAR_LIVRO = "/books/%s";
     private static final String PATH_CONSULTAR_LIVROS = "/books";
     private static final String PATH_CONSULTAR_VERSOES = "/versions";
@@ -58,6 +66,8 @@ public class BibliaDigitalRestIntegrationTest {
 
     private String url;
 
+    private String token;
+
     private HttpHeaders headers;
 
     private Object body;
@@ -66,12 +76,14 @@ public class BibliaDigitalRestIntegrationTest {
     public void init() {
 
         url = randomAlphabetic(20);
+        token = randomAlphabetic(10);
         headers = make(new HttpHeaders());
         body = make(new Object());
 
         setField(bibliaDigitalRestIntegration, "restTemplate", restTemplate);
         setField(bibliaDigitalRestIntegration, "messageService", messageService);
         setField(bibliaDigitalRestIntegration, "urlBibliaDigital", url);
+        setField(bibliaDigitalRestIntegration, "authorizationBibliaDigital", token);
     }
 
     @Test
@@ -100,7 +112,7 @@ public class BibliaDigitalRestIntegrationTest {
         final HttpEntity<?> httpEntityCaptured = httpEntityCaptor.getValue();
         assertNotNull(httpEntityCaptured);
         assertNull(httpEntityCaptured.getBody());
-        assertTrue(httpEntityCaptured.getHeaders().isEmpty());
+        assertHeaders(httpEntityCaptured.getHeaders());
 
         assertNotNull(response);
     }
@@ -132,7 +144,7 @@ public class BibliaDigitalRestIntegrationTest {
         final HttpEntity<?> httpEntityCaptured = httpEntityCaptor.getValue();
         assertNotNull(httpEntityCaptured);
         assertNull(httpEntityCaptured.getBody());
-        assertTrue(httpEntityCaptured.getHeaders().isEmpty());
+        assertHeaders(httpEntityCaptured.getHeaders());
 
         assertNotNull(response);
     }
@@ -155,9 +167,22 @@ public class BibliaDigitalRestIntegrationTest {
         final HttpEntity<?> httpEntityCaptured = httpEntityCaptor.getValue();
         assertNotNull(httpEntityCaptured);
         assertNull(httpEntityCaptured.getBody());
-        assertTrue(httpEntityCaptured.getHeaders().isEmpty());
+        assertHeaders(httpEntityCaptured.getHeaders());
 
         assertNotNull(response);
+    }
+
+    private void assertHeaders(final HttpHeaders headers) {
+        assertNotNull(headers);
+        assertFalse(headers.isEmpty());
+
+        assertTrue(headers.containsKey(ACCEPT));
+        assertTrue(headers.containsKey(CONTENT_TYPE));
+        assertTrue(headers.containsKey(AUTHORIZATION));
+
+        assertEquals(APPLICATION_JSON.getMimeType(), headers.getFirst(ACCEPT));
+        assertEquals(APPLICATION_JSON.getMimeType(), headers.getFirst(CONTENT_TYPE));
+        assertEquals((BEARER_TOKEN + token), headers.getFirst(AUTHORIZATION));
     }
 
 }

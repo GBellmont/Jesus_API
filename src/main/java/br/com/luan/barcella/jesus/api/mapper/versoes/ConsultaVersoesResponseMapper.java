@@ -10,24 +10,17 @@ import java.util.stream.Collectors;
 
 import br.com.luan.barcella.jesus.api.domain.VersaoBiblia;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
-import br.com.luan.barcella.jesus.api.dto.response.ConsultaVersoesResponse;
-import br.com.luan.barcella.jesus.api.dto.response.ConsultaVersoesResponse.VersaoResponse;
+import br.com.luan.barcella.jesus.api.dto.response.VersaoResponse;
 
-public class ConsultaVersoesResponseMapper implements Function<List<ConsultaVersoesBibliaDigitalResponse>, ConsultaVersoesResponse> {
+public class ConsultaVersoesResponseMapper implements Function<List<ConsultaVersoesBibliaDigitalResponse>, List<VersaoResponse>> {
 
     @Override
-    public ConsultaVersoesResponse apply(final List<ConsultaVersoesBibliaDigitalResponse> consultaVersoesBibliaDigitalResponseList) {
+    public List<VersaoResponse> apply(final List<ConsultaVersoesBibliaDigitalResponse> consultaVersoesBibliaDigitalResponseList) {
 
         if (isNull(consultaVersoesBibliaDigitalResponseList) || consultaVersoesBibliaDigitalResponseList.isEmpty()) {
             return null;
         }
 
-        return ConsultaVersoesResponse.builder()
-            .versoes(buildVersoes(consultaVersoesBibliaDigitalResponseList))
-            .build();
-    }
-
-    private List<VersaoResponse> buildVersoes(final List<ConsultaVersoesBibliaDigitalResponse> consultaVersoesBibliaDigitalResponseList) {
         return consultaVersoesBibliaDigitalResponseList.stream()
             .filter(Objects::nonNull)
             .map(versao -> {
