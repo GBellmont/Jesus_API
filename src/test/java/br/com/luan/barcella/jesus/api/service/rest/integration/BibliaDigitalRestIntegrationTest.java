@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.util.List;
@@ -32,14 +33,16 @@ import org.springframework.web.client.RestTemplate;
 
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivroBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivrosBibliaDigitalResponse;
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.service.support.MessageService;
 import lombok.SneakyThrows;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BibliaDigitalRestIntegrationTest {
 
-    private static final String PATH_CONSULTAR_LIVROS = "/books";
     private static final String PATH_CONSULTAR_LIVRO = "/books/%s";
+    private static final String PATH_CONSULTAR_LIVROS = "/books";
+    private static final String PATH_CONSULTAR_VERSOES = "/versions";
 
     @InjectMocks
     private BibliaDigitalRestIntegration bibliaDigitalRestIntegration;
@@ -85,7 +88,7 @@ public class BibliaDigitalRestIntegrationTest {
         final HttpMethod httpMethodExpected = GET;
         final Class<ConsultaLivrosBibliaDigitalResponse[]> responseClass = ConsultaLivrosBibliaDigitalResponse[].class;
 
-        final ResponseEntity<ConsultaLivrosBibliaDigitalResponse[]> entityResponse = ResponseEntity.ok(new ConsultaLivrosBibliaDigitalResponse[10]);
+        final ResponseEntity<ConsultaLivrosBibliaDigitalResponse[]> entityResponse = ok(new ConsultaLivrosBibliaDigitalResponse[10]);
 
         when(restTemplate.exchange(eq(urlExpected), eq(httpMethodExpected), any(HttpEntity.class), eq(responseClass)))
             .thenReturn(entityResponse);
@@ -117,12 +120,35 @@ public class BibliaDigitalRestIntegrationTest {
         final HttpMethod httpMethodExpected = GET;
         final Class<ConsultaLivroBibliaDigitalResponse> responseClass = ConsultaLivroBibliaDigitalResponse.class;
 
-        final ResponseEntity<ConsultaLivroBibliaDigitalResponse> entityResponse = ResponseEntity.ok(make(new ConsultaLivroBibliaDigitalResponse()));
+        final ResponseEntity<ConsultaLivroBibliaDigitalResponse> entityResponse = ok(make(new ConsultaLivroBibliaDigitalResponse()));
 
         when(restTemplate.exchange(eq(urlExpected), eq(httpMethodExpected), any(HttpEntity.class), eq(responseClass)))
             .thenReturn(entityResponse);
 
         final ConsultaLivroBibliaDigitalResponse response = bibliaDigitalRestIntegration.consultarLivro(abreviacao);
+
+        verify(restTemplate).exchange(eq(urlExpected), eq(httpMethodExpected), httpEntityCaptor.capture(), eq(responseClass));
+
+        final HttpEntity<?> httpEntityCaptured = httpEntityCaptor.getValue();
+        assertNotNull(httpEntityCaptured);
+        assertNull(httpEntityCaptured.getBody());
+        assertTrue(httpEntityCaptured.getHeaders().isEmpty());
+
+        assertNotNull(response);
+    }
+
+    @Test
+    public void consultarVersoesSucesso() {
+        final String urlExpected = url + PATH_CONSULTAR_VERSOES;
+        final HttpMethod httpMethodExpected = GET;
+        final Class<ConsultaVersoesBibliaDigitalResponse[]> responseClass = ConsultaVersoesBibliaDigitalResponse[].class;
+
+        final ResponseEntity<ConsultaVersoesBibliaDigitalResponse[]> entityResponse = ok(new ConsultaVersoesBibliaDigitalResponse[10]);
+
+        when(restTemplate.exchange(eq(urlExpected), eq(httpMethodExpected), any(HttpEntity.class), eq(responseClass)))
+            .thenReturn(entityResponse);
+
+        final List<ConsultaVersoesBibliaDigitalResponse> response = bibliaDigitalRestIntegration.consultarVersoes();
 
         verify(restTemplate).exchange(eq(urlExpected), eq(httpMethodExpected), httpEntityCaptor.capture(), eq(responseClass));
 
