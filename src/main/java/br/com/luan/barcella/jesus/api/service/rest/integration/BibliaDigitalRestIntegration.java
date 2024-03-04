@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import br.com.luan.barcella.jesus.api.domain.CacheName;
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaCapituloBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivroBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivrosBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
@@ -31,6 +32,7 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
     private static final String BEARER_TOKEN = "Bearer ";
 
     private static final String PATH_CONSULTA_LIVRO = "/books/%s";
+    private static final String PATH_CONSULTAR_CAPITULO = "/verses/%s/%s/%s";
     private static final String PATH_CONSULTAR_LIVROS = "/books";
     private static final String PATH_CONSULTAR_VERSOES = "/versions";
 
@@ -60,6 +62,7 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
         return this.getWithHeaders(url, this.getHttpHeaders(), ConsultaLivroBibliaDigitalResponse.class);
     }
 
+    @Cacheable(CacheName.CONSULTA_VERSOES)
     public List<ConsultaVersoesBibliaDigitalResponse> consultarVersoes() {
         final String url = urlBibliaDigital + PATH_CONSULTAR_VERSOES;
 
@@ -68,6 +71,15 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
         return stream(ofNullable(this.getWithHeaders(url, this.getHttpHeaders(), ConsultaVersoesBibliaDigitalResponse[].class))
             .orElseGet(() -> new ConsultaVersoesBibliaDigitalResponse[0]))
             .toList();
+    }
+
+    @Cacheable(CacheName.CONSULTA_CAPITULO)
+    public ConsultaCapituloBibliaDigitalResponse consultarCapitulo(final String versao, final String abreviacao, final Integer capitulo) {
+        final String url = urlBibliaDigital + format(PATH_CONSULTAR_CAPITULO, versao, abreviacao, capitulo);
+
+        log.info("Realizando chamada para a API da bíblia digital, na url: {}", url);
+
+        return this.getWithHeaders(url, this.getHttpHeaders(), ConsultaCapituloBibliaDigitalResponse.class);
     }
 
     private HttpHeaders getHttpHeaders() {

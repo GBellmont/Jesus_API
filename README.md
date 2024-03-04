@@ -32,7 +32,7 @@ Após isto alguns comandos que podemser úteis:
 
 #### [PAGINADO]Consulta de Livros da Bíblia
 - Controller: **LivrosController**
-- Endpoint: **GET** - `htt://localhost:8090/jesus-api/livros/{index}/{numeroItens}`
+- Endpoint: **GET** - `http://localhost:8090/jesus-api/livros/{index}/{numeroItens}`
 
 - **Path Variable(s)**:
     - index - Integer - _Número da página_
@@ -68,7 +68,7 @@ Após isto alguns comandos que podemser úteis:
 
 #### Consulta de Livro da Bíblia Por Abreviação
 - Controller: **LivrosController**
-- Endpoint: **GET** - `htt://localhost:8090/jesus-api/livros/{abreviacao}`
+- Endpoint: **GET** - `http://localhost:8090/jesus-api/livros/{abreviacao}`
 
 - **Path Variable(s)**: 
    - abreviacao - String - _Dado fornecido no endpoint de listagem de livros_ 
@@ -95,19 +95,64 @@ Após isto alguns comandos que podemser úteis:
 
 #### Consulta de Versões da Bíblia
 - Controller: **VersoesController**
-- Endpoint: **GET** - `htt://localhost:8090/jesus-api/versoes`
+- Endpoint: **GET** - `http://localhost:8090/jesus-api/versoes`
 
 - **Path Variable(s)**: NO_PATH_VARIABLES
 
 - **Response**:
 ```json
 {
-  "versoes": [
+  "index": 1,
+  "numeroItens": 3,
+  "itens": [
     {
-      "codigoVersao": "acf",
-      "numeroVersos": 31106,
-      "nomeCompleto": "Almeida Corrigida Fiel",
-      "descricao": "A versão Almeida Corrigida Fiel | acf (revisado segundo o novo acordo ortográfico da língua portuguesa em 2011) é uma tradução fiel do Velho Testamento em Hebraico (Massorético) e do Novo Testamento em Grego (Textus Receptus), segundo o método de tradução formal (traduzindo cada palavra e mantendo a beleza linguística)."
+      "codigoVersao": "kjv",
+      "numeroVersos": 31101,
+      "nomeCompleto": "King James Version",
+      "descricao": "A bíblia King James possui uma das traduções mais fiéis aos textos hebraicos e gregos, os quais foram escritos centenas de anos atrás. O trabalho de tradução dessa versão bíblica começou em 1603, sendo finalizada e publicada em 1611. Muitas outras foram baseadas na King James, por se tratar de uma obra confiável e, então, ser uma ótima opção de embasamento."
+    },
+    {...}
+  ],
+  "primeiraPagina": false,
+  "ultimaPagina": false
+}
+```
+
+- Diagrama:
+![GET-versoes](Diagramas/GET-versoes.png)
+
+
+
+#### Consulta de Capítulo
+- Controller: **CapitulosController**
+- Endpoint: **GET** - `http://localhost:8090/jesus-api/capitulos/{versao}/{abreviacao}/{capitulo}`
+
+- **Path Variable(s)**:
+  - versao - String - _Dado fornecido no endpoint de listagem de versões_
+  - abreviacao - String - _Dado fornecido no endpoint de listagem de livros, ou consulta de livro_
+  - capitulo - Integer - _Dado fornecido na consulta do livro_
+
+- **Response**:
+```json
+{
+  "livro": {
+    "abreviacao": {
+      "portugues": "gn",
+      "ingles": "gn"
+    },
+    "nome": "Gênesis",
+    "autor": "Moisés",
+    "grupo": "Pentateuco",
+    "versao": "nvi"
+  },
+  "capitulo": {
+    "numero": 1,
+    "quantidadeVersos": 31
+  },
+  "versos": [
+    {
+      "numero": 1,
+      "texto": "No princípio Deus criou os céus e a terra."
     },
     {...}
   ]
@@ -115,4 +160,4 @@ Após isto alguns comandos que podemser úteis:
 ```
 
 - Diagrama:
-![GET-versoes](Diagramas/GET-versoes.png)
+  ![GET-capitulo-versao-abreviacao-capitulo](Diagramas/GET-capitulo-versao-abreviacao-capitulo.png)

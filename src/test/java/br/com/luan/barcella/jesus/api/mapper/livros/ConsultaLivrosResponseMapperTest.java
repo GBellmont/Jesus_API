@@ -1,5 +1,6 @@
 package br.com.luan.barcella.jesus.api.mapper.livros;
 
+import static br.com.luan.barcella.jesus.api.fixture.Fixture.make;
 import static br.com.luan.barcella.jesus.api.utils.RandomCollectionUtils.generateList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,7 +36,7 @@ public class ConsultaLivrosResponseMapperTest {
     @Test
     public void deveMapearConsultaLivrosResponseCorretamente() {
         final List<ConsultaLivrosBibliaDigitalResponse> livrosBibliaDigitalResponses = generateList(
-            () -> Fixture.make(new ConsultaLivrosBibliaDigitalResponse()), 1, 10);
+            () -> make(new ConsultaLivrosBibliaDigitalResponse()), 1, 10);
 
         final List<ConsultaLivrosResponse> response = CONSULTA_LIVROS_RESPONSE_MAPPER.apply(livrosBibliaDigitalResponses);
 
@@ -45,10 +46,37 @@ public class ConsultaLivrosResponseMapperTest {
         }
     }
 
+    @Test
+    public void deveMapearConsultaLivrosResponseCorretamenteComAbreviacaoNull() {
+        final List<ConsultaLivrosBibliaDigitalResponse> livrosBibliaDigitalResponses = generateList(() -> {
+            final ConsultaLivrosBibliaDigitalResponse livro = make(new ConsultaLivrosBibliaDigitalResponse());
+            livro.setAbreviacao(null);
+
+            return livro;
+        }, 1, 10);
+
+        final List<ConsultaLivrosResponse> response = CONSULTA_LIVROS_RESPONSE_MAPPER.apply(livrosBibliaDigitalResponses);
+
+        assertNotNull(response);
+        for (int i = 0; i < response.size(); i++) {
+            this.assertConsultaLivrosResponseComAbreviacaoNull(response.get(i), livrosBibliaDigitalResponses.get(i));
+        }
+    }
+
     private void assertConsultaLivrosResponse(final ConsultaLivrosResponse response, final ConsultaLivrosBibliaDigitalResponse expected) {
         assertNotNull(response);
         assertEquals(response.getAbreviacao().getPortugues(), expected.getAbreviacao().getPortugues());
         assertEquals(response.getAbreviacao().getIngles(), expected.getAbreviacao().getIngles());
+        assertEquals(response.getAutor(), expected.getAutor());
+        assertEquals(response.getNumeroCapitulos(), expected.getNumeroCapitulos());
+        assertEquals(response.getGrupo(), expected.getGrupo());
+        assertEquals(response.getTestamento(), expected.getTestamento());
+        assertEquals(response.getNome(), expected.getNome());
+    }
+
+    private void assertConsultaLivrosResponseComAbreviacaoNull(final ConsultaLivrosResponse response, final ConsultaLivrosBibliaDigitalResponse expected) {
+        assertNotNull(response);
+        assertNull(response.getAbreviacao());
         assertEquals(response.getAutor(), expected.getAutor());
         assertEquals(response.getNumeroCapitulos(), expected.getNumeroCapitulos());
         assertEquals(response.getGrupo(), expected.getGrupo());

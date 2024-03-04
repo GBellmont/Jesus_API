@@ -29,6 +29,10 @@ public class ConsultaLivroResponseMapper implements Function<ConsultaLivroBiblia
     }
 
     private AbreviacaoResponse buildAbreviacao(final AbreviacaoBibliaDigitalResponse abreviacao) {
+        if (isNull(abreviacao)) {
+            return null;
+        }
+
         return AbreviacaoResponse.builder()
             .portugues(abreviacao.getPortugues())
             .ingles(abreviacao.getIngles())
