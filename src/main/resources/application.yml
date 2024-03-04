@@ -39,3 +39,4 @@ redis:
 integration:
   biblia-digital:
     url: ${URL_BIBLIA_DIGITAL:https://www.abibliadigital.com.br/api}
+    authorization-bearer-token: ${TOKEN_BIBLIA_DIGITAL:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHIiOiJTYXQgTWFyIDAyIDIwMjQgMTc6MTc6NTggR01UKzAwMDAubHVhbi5iYXJjZWxsYUBnbWFpbC5jb20iLCJpYXQiOjE3MDkzOTk4Nzh9.tMAOUB37veqIpUt_6ww6x4Nr8SbnHVXClGAMrWUuvG8}

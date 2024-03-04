@@ -5,6 +5,7 @@ import static java.util.Optional.ofNullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import br.com.luan.barcella.jesus.api.dto.response.PaginacaoResponse;
 
@@ -12,6 +13,20 @@ public class PaginacaoService {
 
     private static final int INDEX_ZERO = 0;
     private static final int ITENS_MINIMOS_INDEX_0 = 1;
+
+    public static <T, R> PaginacaoResponse<T> paginarComObjetoResponseMapper(final Integer index, final Integer numeroItens,
+        final List<R> itens, final Function<List<R>, List<T>> mapper) {
+
+        final PaginacaoResponse<R> paginacaoSemMapear = paginarComObjetoResponse(index, numeroItens, itens);
+
+        return PaginacaoResponse.<T>builder()
+            .index(paginacaoSemMapear.getIndex())
+            .numeroItens(paginacaoSemMapear.getNumeroItens())
+            .itens(mapper.apply(paginacaoSemMapear.getItens()))
+            .primeiraPagina(paginacaoSemMapear.isPrimeiraPagina())
+            .ultimaPagina(paginacaoSemMapear.isUltimaPagina())
+            .build();
+    }
 
     public static <T> PaginacaoResponse<T> paginarComObjetoResponse(final Integer index, final Integer numeroItens, final List<T> itens){
         final int indexMaximo = calcularIndexMaximo(calcularIndexMinimo(index, numeroItens), numeroItens, itens);

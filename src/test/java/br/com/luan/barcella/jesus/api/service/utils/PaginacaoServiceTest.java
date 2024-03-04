@@ -2,6 +2,7 @@ package br.com.luan.barcella.jesus.api.service.utils;
 
 import static br.com.luan.barcella.jesus.api.service.utils.PaginacaoService.paginar;
 import static br.com.luan.barcella.jesus.api.service.utils.PaginacaoService.paginarComObjetoResponse;
+import static br.com.luan.barcella.jesus.api.service.utils.PaginacaoService.paginarComObjetoResponseMapper;
 import static br.com.luan.barcella.jesus.api.utils.RandomCollectionUtils.generateList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,12 +11,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import br.com.luan.barcella.jesus.api.dto.response.PaginacaoResponse;
 
 public class PaginacaoServiceTest {
+
+    final Function<List<Object>, List<String>> mapperTest = (list) -> list.stream()
+        .map(Object::toString)
+        .collect(Collectors.toList());
 
     @Test
     public void deveRetornarArrayVazioQuandoIndexForNull() {
@@ -168,6 +175,26 @@ public class PaginacaoServiceTest {
         assertEquals(itens.get(7), responsePaginado.getItens().get(1));
         assertEquals(itens.get(8), responsePaginado.getItens().get(2));
         assertFalse(responsePaginado.isPrimeiraPagina());
+        assertTrue(responsePaginado.isUltimaPagina());
+    }
+
+    @Test
+    public void deveRetornarPaginacaoResponseCorretamenteMapeado() {
+        final int index = 0;
+        final int numeroItens = 3;
+        final int tamanhoEsperado = 2;
+
+        final List<Object> itens = generateList(Object::new, 2, 2);
+
+        final PaginacaoResponse<String> responsePaginado = paginarComObjetoResponseMapper(index, numeroItens, itens, mapperTest);
+
+        assertNotNull(responsePaginado);
+        assertEquals(index, responsePaginado.getIndex());
+        assertEquals(numeroItens, responsePaginado.getNumeroItens());
+        assertEquals(tamanhoEsperado, responsePaginado.getItens().size());
+        assertEquals(itens.get(0).toString(), responsePaginado.getItens().get(0));
+        assertEquals(itens.get(1).toString(), responsePaginado.getItens().get(1));
+        assertTrue(responsePaginado.isPrimeiraPagina());
         assertTrue(responsePaginado.isUltimaPagina());
     }
 

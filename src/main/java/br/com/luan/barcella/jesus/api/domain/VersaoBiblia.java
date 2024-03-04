@@ -2,9 +2,6 @@ package br.com.luan.barcella.jesus.api.domain;
 
 import static java.util.Arrays.stream;
 
-import java.util.Arrays;
-
-import br.com.luan.barcella.jesus.api.dto.response.ConsultaVersoesResponse.VersaoResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

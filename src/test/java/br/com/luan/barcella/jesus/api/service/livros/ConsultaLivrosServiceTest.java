@@ -1,7 +1,6 @@
 package br.com.luan.barcella.jesus.api.service.livros;
 
 import static br.com.luan.barcella.jesus.api.utils.RandomCollectionUtils.generateList;
-import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
@@ -51,6 +50,7 @@ public class ConsultaLivrosServiceTest {
         verify(bibliaDigitalRestIntegration).consultarLivros();
 
         assertNotNull(response);
+        assertNotNull(response.getItens());
         assertFalse(response.getItens().isEmpty());
     }
 
