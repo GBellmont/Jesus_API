@@ -1,7 +1,9 @@
 package br.com.luan.barcella.jesus.api.service.rest.integration;
 
 import static br.com.luan.barcella.jesus.api.fixture.Fixture.make;
+import static java.lang.String.format;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -37,6 +39,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaCapituloBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivroBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivrosBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
@@ -48,7 +51,8 @@ public class BibliaDigitalRestIntegrationTest {
 
     private static final String BEARER_TOKEN = "Bearer ";
 
-    private static final String PATH_CONSULTAR_LIVRO = "/books/%s";
+    private static final String PATH_CONSULTA_LIVRO = "/books/%s";
+    private static final String PATH_CONSULTAR_CAPITULO = "/verses/%s/%s/%s";
     private static final String PATH_CONSULTAR_LIVROS = "/books";
     private static final String PATH_CONSULTAR_VERSOES = "/versions";
 
@@ -128,7 +132,7 @@ public class BibliaDigitalRestIntegrationTest {
     @Test
     public void consultarLivroSucesso() {
         final String abreviacao = randomAlphabetic(5);
-        final String urlExpected = url + String.format(PATH_CONSULTAR_LIVRO, abreviacao);
+        final String urlExpected = url + format(PATH_CONSULTA_LIVRO, abreviacao);
         final HttpMethod httpMethodExpected = GET;
         final Class<ConsultaLivroBibliaDigitalResponse> responseClass = ConsultaLivroBibliaDigitalResponse.class;
 
@@ -150,6 +154,14 @@ public class BibliaDigitalRestIntegrationTest {
     }
 
     @Test
+    @SneakyThrows
+    public void annotationCacheableConsultarVersoes() {
+        Assert.assertTrue(bibliaDigitalRestIntegration.getClass()
+            .getDeclaredMethod("consultarVersoes")
+            .isAnnotationPresent(Cacheable.class));
+    }
+
+    @Test
     public void consultarVersoesSucesso() {
         final String urlExpected = url + PATH_CONSULTAR_VERSOES;
         final HttpMethod httpMethodExpected = GET;
@@ -161,6 +173,41 @@ public class BibliaDigitalRestIntegrationTest {
             .thenReturn(entityResponse);
 
         final List<ConsultaVersoesBibliaDigitalResponse> response = bibliaDigitalRestIntegration.consultarVersoes();
+
+        verify(restTemplate).exchange(eq(urlExpected), eq(httpMethodExpected), httpEntityCaptor.capture(), eq(responseClass));
+
+        final HttpEntity<?> httpEntityCaptured = httpEntityCaptor.getValue();
+        assertNotNull(httpEntityCaptured);
+        assertNull(httpEntityCaptured.getBody());
+        assertHeaders(httpEntityCaptured.getHeaders());
+
+        assertNotNull(response);
+    }
+
+    @Test
+    @SneakyThrows
+    public void annotationCacheableConsultarCapitulo() {
+        Assert.assertTrue(bibliaDigitalRestIntegration.getClass()
+            .getDeclaredMethod("consultarCapitulo", String.class, String.class, Integer.class)
+            .isAnnotationPresent(Cacheable.class));
+    }
+
+    @Test
+    public void consultarCapituloSucesso() {
+        final String versao = randomAlphabetic(3);
+        final String abreviacao = randomAlphabetic(3);
+        final Integer capitulo = nextInt();
+
+        final String urlExpected = url + format(PATH_CONSULTAR_CAPITULO, versao, abreviacao, capitulo);
+        final HttpMethod httpMethodExpected = GET;
+        final Class<ConsultaCapituloBibliaDigitalResponse> responseClass = ConsultaCapituloBibliaDigitalResponse.class;
+
+        final ResponseEntity<ConsultaCapituloBibliaDigitalResponse> entityResponse = ok(new ConsultaCapituloBibliaDigitalResponse());
+
+        when(restTemplate.exchange(eq(urlExpected), eq(httpMethodExpected), any(HttpEntity.class), eq(responseClass)))
+            .thenReturn(entityResponse);
+
+        final ConsultaCapituloBibliaDigitalResponse response = bibliaDigitalRestIntegration.consultarCapitulo(versao, abreviacao, capitulo);
 
         verify(restTemplate).exchange(eq(urlExpected), eq(httpMethodExpected), httpEntityCaptor.capture(), eq(responseClass));
 

@@ -29,6 +29,10 @@ cache:
     livros:
       consulta-livros: ${TTL_CACHE_CONSULTA_LIVROS:86400} # 1 dia em segundos
       consulta-livro: ${TTL_CACHE_CONSULTA_LIVRO:86400} # 1 dia em segundos
+    versoes:
+      consulta-versoes: ${TTL_CACHE_CONSULTA_VERSOES:86400} # 1 dia em segundos
+    capitulos:
+      consulta-capitulo: ${TTL_CACHE_CONSULTA_CAPITULO:86400} # 1 dia em segundos
 
 redis:
   cache:

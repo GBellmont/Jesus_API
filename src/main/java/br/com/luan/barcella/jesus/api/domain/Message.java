@@ -10,13 +10,17 @@ public enum Message {
 
     ABREVIACAO_INVALIDA("abreviacao.invalida"),
 
+    CAPITULO_INVALIDO("capitulo.invalido"),
+
     FALHA_INESPERADA("falha.inesperada"),
 
     INDEX_INVALIDO("index.invalido"),
 
     NUMERO_ITENS_INVALIDO("numero-itens.invalido"),
 
-    SERVICO_INDISPONIVEL("servico.indisponivel");
+    SERVICO_INDISPONIVEL("servico.indisponivel"),
+
+    VERSAO_INVALIDA("versao.invalida");
 
     private final String message;
 
