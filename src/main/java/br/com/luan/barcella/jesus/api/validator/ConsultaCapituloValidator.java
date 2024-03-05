@@ -3,7 +3,6 @@ package br.com.luan.barcella.jesus.api.validator;
 import static br.com.luan.barcella.jesus.api.domain.ErrorType.VALIDATION;
 import static br.com.luan.barcella.jesus.api.domain.Message.ABREVIACAO_INVALIDA;
 import static br.com.luan.barcella.jesus.api.domain.Message.CAPITULO_INVALIDO;
-import static br.com.luan.barcella.jesus.api.domain.Message.VERSAO_INVALIDA;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -26,15 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ConsultaCapituloValidator implements TriConsumer<String, String, Integer> {
 
     private final BibliaDigitalRestIntegration bibliaDigitalRestIntegration;
+    private final VersaoValidator versaoValidator;
     private final MessageService messageService;
 
     @Override
     public void accept(final String versao, final String abreviacao, final Integer capitulo) {
 
-        if (isBlank(versao) || verificaNaoExistenciaVersao(versao)) {
-            log.warn("Versão inválida ou não informada.");
-            throw new ClientErrorException(VALIDATION, messageService.get(VERSAO_INVALIDA));
-        }
+        versaoValidator.accept(versao);
 
         final ConsultaLivrosBibliaDigitalResponse livro = getLivroPorAbreviacao(abreviacao);
 
@@ -47,13 +44,6 @@ public class ConsultaCapituloValidator implements TriConsumer<String, String, In
             log.warn("Capítulo inválido ou não informado.");
             throw new ClientErrorException(VALIDATION, messageService.get(CAPITULO_INVALIDO));
         }
-    }
-
-    private boolean verificaNaoExistenciaVersao(final String versao) {
-        return bibliaDigitalRestIntegration.consultarVersoes()
-            .stream()
-            .filter(Objects::nonNull)
-            .noneMatch((versaoConsultada) -> versao.equals(versaoConsultada.getCodigoVersao()));
     }
 
     private ConsultaLivrosBibliaDigitalResponse getLivroPorAbreviacao(final String abreviacao) {

@@ -21,7 +21,7 @@ Assim você estará dentro do container do redis e poderá executar:
 redis-cli
 ````
 
-Após isto alguns comandos que podemser úteis:
+Após isto alguns comandos que podem ser úteis:
 - keys * -> lista as chaves atuais salvas no redis;
 - get CHAVE -> lista as propriedades da chave informada;
 - del CHAVE, ...CHAVE -> exclui as chaves informadas;
@@ -161,3 +161,34 @@ Após isto alguns comandos que podemser úteis:
 
 - Diagrama:
   ![GET-capitulo-versao-abreviacao-capitulo](Diagramas/GET-capitulo-versao-abreviacao-capitulo.png)
+
+
+
+#### Consulta de Verso Aleatório
+- Controller: **VersosController**
+- Endpoint: **GET** - `http://localhost:8090/jesus-api/versos/{versao}/aleatorio`
+
+- **Path Variable(s)**:
+  - versao - String - _Dado fornecido no endpoint de listagem de versões_
+
+- **Response**:
+```json
+{
+  "livro": {
+    "abreviacao": {
+      "portugues": "gn",
+      "ingles": "gn"
+    },
+    "nome": "Gênesis",
+    "autor": "Moisés",
+    "grupo": "Pentateuco",
+    "versao": "nvi"
+  },
+  "numeroCapitulo": 1,
+  "numeroVerso": 1,
+  "texto": "No princípio Deus criou os céus e a terra."
+}
+```
+
+- Diagrama:
+  ![GET-versos-versao-aleatorio](Diagramas/GET-versos-versao-aleatorio.png)

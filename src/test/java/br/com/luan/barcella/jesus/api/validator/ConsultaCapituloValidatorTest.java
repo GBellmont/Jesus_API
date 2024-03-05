@@ -3,10 +3,8 @@ package br.com.luan.barcella.jesus.api.validator;
 import static br.com.luan.barcella.jesus.api.domain.ErrorType.VALIDATION;
 import static br.com.luan.barcella.jesus.api.domain.Message.ABREVIACAO_INVALIDA;
 import static br.com.luan.barcella.jesus.api.domain.Message.CAPITULO_INVALIDO;
-import static br.com.luan.barcella.jesus.api.domain.Message.VERSAO_INVALIDA;
 import static br.com.luan.barcella.jesus.api.fixture.Fixture.make;
 import static br.com.luan.barcella.jesus.api.utils.RandomCollectionUtils.generateList;
-import static br.com.luan.barcella.jesus.api.utils.RandomCollectionUtils.pickRandom;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -30,10 +28,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import br.com.luan.barcella.jesus.api.domain.Message;
-import br.com.luan.barcella.jesus.api.domain.VersaoBiblia;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.AbreviacaoBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivrosBibliaDigitalResponse;
-import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.exception.ClientErrorException;
 import br.com.luan.barcella.jesus.api.service.rest.integration.BibliaDigitalRestIntegration;
 import br.com.luan.barcella.jesus.api.service.support.MessageService;
@@ -46,6 +42,9 @@ public class ConsultaCapituloValidatorTest {
 
     @Mock
     private BibliaDigitalRestIntegration bibliaDigitalRestIntegration;
+
+    @Mock
+    private VersaoValidator versaoValidator;
 
     @Mock
     private MessageService messageService;
@@ -61,80 +60,12 @@ public class ConsultaCapituloValidatorTest {
     }
 
     @Test
-    public void deveLancarClientErrorExceptionQuandoVersaoForNull() {
-        final ClientErrorException exception = Assertions.assertThrows(ClientErrorException.class, () -> {
-           consultaCapituloValidator.accept(null, null, null);
-        });
-
-        verify(messageService).get(VERSAO_INVALIDA);
-        verifyNoInteractions(bibliaDigitalRestIntegration);
-
-        assertNotNull(exception);
-        assertEquals(VALIDATION, exception.getErrorType());
-        assertEquals(message, exception.getMessage());
-    }
-
-    @Test
-    public void deveLancarClientErrorExceptionQuandoVersaoForStringEmpty() {
-        final ClientErrorException exception = Assertions.assertThrows(ClientErrorException.class, () -> {
-            consultaCapituloValidator.accept(EMPTY, null, null);
-        });
-
-        verify(messageService).get(VERSAO_INVALIDA);
-        verifyNoInteractions(bibliaDigitalRestIntegration);
-
-        assertNotNull(exception);
-        assertEquals(VALIDATION, exception.getErrorType());
-        assertEquals(message, exception.getMessage());
-    }
-
-    @Test
-    public void deveLancarClientErrorExceptionQuandoVersaoForStringBlank() {
-        final ClientErrorException exception = Assertions.assertThrows(ClientErrorException.class, () -> {
-            consultaCapituloValidator.accept(SPACE, null, null);
-        });
-
-        verify(messageService).get(VERSAO_INVALIDA);
-        verifyNoInteractions(bibliaDigitalRestIntegration);
-
-        assertNotNull(exception);
-        assertEquals(VALIDATION, exception.getErrorType());
-        assertEquals(message, exception.getMessage());
-    }
-
-    @Test
-    public void deveLancarClientErrorExceptionQuandoVersaoNaoExistir() {
-        final String versao = randomAlphabetic(10);
-
-        final List<ConsultaVersoesBibliaDigitalResponse> versoesResponse = gerarListaVersoesDiferentes(versao);
-
-        when(bibliaDigitalRestIntegration.consultarVersoes())
-            .thenReturn(versoesResponse);
-
-        final ClientErrorException exception = Assertions.assertThrows(ClientErrorException.class, () -> {
-            consultaCapituloValidator.accept(versao, null, null);
-        });
-
-        verify(bibliaDigitalRestIntegration).consultarVersoes();
-        verify(messageService).get(VERSAO_INVALIDA);
-        verifyNoMoreInteractions(bibliaDigitalRestIntegration);
-
-        assertNotNull(exception);
-        assertEquals(VALIDATION, exception.getErrorType());
-        assertEquals(message, exception.getMessage());
-    }
-
-    @Test
     public void deveLancarClientErrorExceptionQuandoAbreviacaoForNull() {
         final String versao = randomAlphabetic(10);
-
-        final List<ConsultaVersoesBibliaDigitalResponse> versoesResponse = gerarListaVersoesComVersaoIgual(versao);
 
         final List<ConsultaLivrosBibliaDigitalResponse> livrosResponse = generateList(
             () -> make(new ConsultaLivrosBibliaDigitalResponse()), 10, 10);
 
-        when(bibliaDigitalRestIntegration.consultarVersoes())
-            .thenReturn(versoesResponse);
         when(bibliaDigitalRestIntegration.consultarLivros())
             .thenReturn(livrosResponse);
 
@@ -142,7 +73,7 @@ public class ConsultaCapituloValidatorTest {
             consultaCapituloValidator.accept(versao, null, null);
         });
 
-        verify(bibliaDigitalRestIntegration).consultarVersoes();
+        verify(versaoValidator).accept(versao);
         verify(bibliaDigitalRestIntegration).consultarLivros();
         verify(messageService).get(ABREVIACAO_INVALIDA);
         verifyNoMoreInteractions(bibliaDigitalRestIntegration);
@@ -156,13 +87,9 @@ public class ConsultaCapituloValidatorTest {
     public void deveLancarClientErrorExceptionQuandoAbreviacaoForStringEmpty() {
         final String versao = randomAlphabetic(10);
 
-        final List<ConsultaVersoesBibliaDigitalResponse> versoesResponse = gerarListaVersoesComVersaoIgual(versao);
-
         final List<ConsultaLivrosBibliaDigitalResponse> livrosResponse = generateList(
             () -> make(new ConsultaLivrosBibliaDigitalResponse()), 10, 10);
 
-        when(bibliaDigitalRestIntegration.consultarVersoes())
-            .thenReturn(versoesResponse);
         when(bibliaDigitalRestIntegration.consultarLivros())
             .thenReturn(livrosResponse);
 
@@ -170,7 +97,7 @@ public class ConsultaCapituloValidatorTest {
             consultaCapituloValidator.accept(versao, EMPTY, null);
         });
 
-        verify(bibliaDigitalRestIntegration).consultarVersoes();
+        verify(versaoValidator).accept(versao);
         verify(bibliaDigitalRestIntegration).consultarLivros();
         verify(messageService).get(ABREVIACAO_INVALIDA);
         verifyNoMoreInteractions(bibliaDigitalRestIntegration);
@@ -184,12 +111,8 @@ public class ConsultaCapituloValidatorTest {
     public void deveLancarClientErrorExceptionQuandoAbreviacaoForStringBlank() {
         final String versao = randomAlphabetic(10);
 
-        final List<ConsultaVersoesBibliaDigitalResponse> versoesResponse = gerarListaVersoesComVersaoIgual(versao);
-
         final List<ConsultaLivrosBibliaDigitalResponse> livrosResponse = generateList(() -> make(new ConsultaLivrosBibliaDigitalResponse()), 10, 10);
 
-        when(bibliaDigitalRestIntegration.consultarVersoes())
-            .thenReturn(versoesResponse);
         when(bibliaDigitalRestIntegration.consultarLivros())
             .thenReturn(livrosResponse);
 
@@ -197,7 +120,7 @@ public class ConsultaCapituloValidatorTest {
             consultaCapituloValidator.accept(versao, SPACE, null);
         });
 
-        verify(bibliaDigitalRestIntegration).consultarVersoes();
+        verify(versaoValidator).accept(versao);
         verify(bibliaDigitalRestIntegration).consultarLivros();
         verify(messageService).get(ABREVIACAO_INVALIDA);
         verifyNoMoreInteractions(bibliaDigitalRestIntegration);
@@ -212,12 +135,8 @@ public class ConsultaCapituloValidatorTest {
         final String versao = randomAlphabetic(10);
         final String abreviacao = randomAlphabetic(10);
 
-        final List<ConsultaVersoesBibliaDigitalResponse> versoesResponse = gerarListaVersoesComVersaoIgual(versao);
-
         final List<ConsultaLivrosBibliaDigitalResponse> livrosResponse = gerarListaLivrosDiferentes(abreviacao);
 
-        when(bibliaDigitalRestIntegration.consultarVersoes())
-            .thenReturn(versoesResponse);
         when(bibliaDigitalRestIntegration.consultarLivros())
             .thenReturn(livrosResponse);
 
@@ -225,7 +144,7 @@ public class ConsultaCapituloValidatorTest {
             consultaCapituloValidator.accept(versao, abreviacao, null);
         });
 
-        verify(bibliaDigitalRestIntegration).consultarVersoes();
+        verify(versaoValidator).accept(versao);
         verify(bibliaDigitalRestIntegration).consultarLivros();
         verify(messageService).get(ABREVIACAO_INVALIDA);
         verifyNoMoreInteractions(bibliaDigitalRestIntegration);
@@ -240,12 +159,8 @@ public class ConsultaCapituloValidatorTest {
         final String versao = randomAlphabetic(10);
         final String abreviacao = randomAlphabetic(10);
 
-        final List<ConsultaVersoesBibliaDigitalResponse> versoesResponse = gerarListaVersoesComVersaoIgual(versao);
-
         final List<ConsultaLivrosBibliaDigitalResponse> livrosResponse = gerarListaLivrosComLivroIgualEhNumeroCapitulosMenor(abreviacao, nextInt());
 
-        when(bibliaDigitalRestIntegration.consultarVersoes())
-            .thenReturn(versoesResponse);
         when(bibliaDigitalRestIntegration.consultarLivros())
             .thenReturn(livrosResponse);
 
@@ -253,7 +168,7 @@ public class ConsultaCapituloValidatorTest {
             consultaCapituloValidator.accept(versao, abreviacao, null);
         });
 
-        verify(bibliaDigitalRestIntegration).consultarVersoes();
+        verify(versaoValidator).accept(versao);
         verify(bibliaDigitalRestIntegration).consultarLivros();
         verify(messageService).get(CAPITULO_INVALIDO);
         verifyNoMoreInteractions(bibliaDigitalRestIntegration);
@@ -269,12 +184,8 @@ public class ConsultaCapituloValidatorTest {
         final String abreviacao = randomAlphabetic(10);
         final Integer capitulo = nextInt();
 
-        final List<ConsultaVersoesBibliaDigitalResponse> versoesResponse = gerarListaVersoesComVersaoIgual(versao);
-
         final List<ConsultaLivrosBibliaDigitalResponse> livrosResponse = gerarListaLivrosComLivroIgualEhNumeroCapitulosMenor(abreviacao, capitulo);
 
-        when(bibliaDigitalRestIntegration.consultarVersoes())
-            .thenReturn(versoesResponse);
         when(bibliaDigitalRestIntegration.consultarLivros())
             .thenReturn(livrosResponse);
 
@@ -282,7 +193,7 @@ public class ConsultaCapituloValidatorTest {
             consultaCapituloValidator.accept(versao, abreviacao, capitulo);
         });
 
-        verify(bibliaDigitalRestIntegration).consultarVersoes();
+        verify(versaoValidator).accept(versao);
         verify(bibliaDigitalRestIntegration).consultarLivros();
         verify(messageService).get(CAPITULO_INVALIDO);
         verifyNoMoreInteractions(bibliaDigitalRestIntegration);
@@ -298,45 +209,17 @@ public class ConsultaCapituloValidatorTest {
         final String abreviacao = randomAlphabetic(10);
         final Integer capitulo = nextInt();
 
-        final List<ConsultaVersoesBibliaDigitalResponse> versoesResponse = gerarListaVersoesComVersaoIgual(versao);
-
         final List<ConsultaLivrosBibliaDigitalResponse> livrosResponse = gerarListaLivrosComLivroIgualEhNumeroCapitulosMaior(abreviacao, capitulo);
 
-        when(bibliaDigitalRestIntegration.consultarVersoes())
-            .thenReturn(versoesResponse);
         when(bibliaDigitalRestIntegration.consultarLivros())
             .thenReturn(livrosResponse);
 
         consultaCapituloValidator.accept(versao, abreviacao, capitulo);
 
-        verify(bibliaDigitalRestIntegration).consultarVersoes();
+        verify(versaoValidator).accept(versao);
         verify(bibliaDigitalRestIntegration).consultarLivros();
         verifyNoMoreInteractions(bibliaDigitalRestIntegration);
         verifyNoInteractions(messageService);
-    }
-
-    private List<ConsultaVersoesBibliaDigitalResponse> gerarListaVersoesDiferentes(final String versao) {
-        return generateList(() -> {
-            final VersaoBiblia versaoBiblia = pickRandom(VersaoBiblia.values());
-
-            final ConsultaVersoesBibliaDigitalResponse response = make(new ConsultaVersoesBibliaDigitalResponse());
-            response.setCodigoVersao(versaoBiblia.getCodigoBibliaDigital());
-            response.setCodigoVersao(randomAlphabetic(versao.length() + 3));
-
-            return response;
-        }, 1, 4);
-    }
-
-    private List<ConsultaVersoesBibliaDigitalResponse> gerarListaVersoesComVersaoIgual(final String versao) {
-        return generateList(() -> {
-            final VersaoBiblia versaoBiblia = pickRandom(VersaoBiblia.values());
-
-            final ConsultaVersoesBibliaDigitalResponse response = make(new ConsultaVersoesBibliaDigitalResponse());
-            response.setCodigoVersao(versaoBiblia.getCodigoBibliaDigital());
-            response.setCodigoVersao(versao);
-
-            return response;
-        }, 1, 4);
     }
 
     private List<ConsultaLivrosBibliaDigitalResponse> gerarListaLivrosDiferentes(final String abreviacao) {

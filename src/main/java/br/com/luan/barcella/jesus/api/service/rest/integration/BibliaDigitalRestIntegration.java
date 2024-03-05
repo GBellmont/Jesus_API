@@ -19,6 +19,7 @@ import br.com.luan.barcella.jesus.api.domain.CacheName;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaCapituloBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivroBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivrosBibliaDigitalResponse;
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoAleatorioBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.service.rest.AbstractRestApiService;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +32,11 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
 
     private static final String BEARER_TOKEN = "Bearer ";
 
+    private static final String PATH_CONSULTA_CAPITULO = "/verses/%s/%s/%s";
     private static final String PATH_CONSULTA_LIVRO = "/books/%s";
-    private static final String PATH_CONSULTAR_CAPITULO = "/verses/%s/%s/%s";
-    private static final String PATH_CONSULTAR_LIVROS = "/books";
-    private static final String PATH_CONSULTAR_VERSOES = "/versions";
+    private static final String PATH_CONSULTA_LIVROS = "/books";
+    private static final String PATH_CONSULTA_VERSO_ALEATORIO = "/verses/%s/random";
+    private static final String PATH_CONSULTA_VERSOES = "/versions";
 
     @Value("${integration.biblia-digital.url}")
     private String urlBibliaDigital;
@@ -44,7 +46,7 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
 
     @Cacheable(CacheName.CONSULTA_LIVROS)
     public List<ConsultaLivrosBibliaDigitalResponse> consultarLivros() {
-        final String url = urlBibliaDigital + PATH_CONSULTAR_LIVROS;
+        final String url = urlBibliaDigital + PATH_CONSULTA_LIVROS;
 
         log.info("Realizando chamada para a API da bíblia digital, na url: {}", url);
 
@@ -64,7 +66,7 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
 
     @Cacheable(CacheName.CONSULTA_VERSOES)
     public List<ConsultaVersoesBibliaDigitalResponse> consultarVersoes() {
-        final String url = urlBibliaDigital + PATH_CONSULTAR_VERSOES;
+        final String url = urlBibliaDigital + PATH_CONSULTA_VERSOES;
 
         log.info("Realizando chamada para a API da bíblia digital, na url: {}", url);
 
@@ -75,11 +77,19 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
 
     @Cacheable(CacheName.CONSULTA_CAPITULO)
     public ConsultaCapituloBibliaDigitalResponse consultarCapitulo(final String versao, final String abreviacao, final Integer capitulo) {
-        final String url = urlBibliaDigital + format(PATH_CONSULTAR_CAPITULO, versao, abreviacao, capitulo);
+        final String url = urlBibliaDigital + format(PATH_CONSULTA_CAPITULO, versao, abreviacao, capitulo);
 
         log.info("Realizando chamada para a API da bíblia digital, na url: {}", url);
 
         return this.getWithHeaders(url, this.getHttpHeaders(), ConsultaCapituloBibliaDigitalResponse.class);
+    }
+
+    public ConsultaVersoAleatorioBibliaDigitalResponse consultarVersoAleatorio(final String versao) {
+        final String url = urlBibliaDigital + format(PATH_CONSULTA_VERSO_ALEATORIO, versao);
+
+        log.info("Realizando chamada para a API da bíblia digital, na url: {}", url);
+
+        return this.getWithHeaders(url, this.getHttpHeaders(), ConsultaVersoAleatorioBibliaDigitalResponse.class);
     }
 
     private HttpHeaders getHttpHeaders() {

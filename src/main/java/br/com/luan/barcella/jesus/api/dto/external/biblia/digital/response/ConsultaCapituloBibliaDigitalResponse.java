@@ -13,7 +13,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
-public class ConsultaCapituloBibliaDigitalResponse implements Serializable {
+public final class ConsultaCapituloBibliaDigitalResponse implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 4809306290016201119L;
