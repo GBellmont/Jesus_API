@@ -93,11 +93,13 @@ Após isto alguns comandos que podem ser úteis:
 ![GET-livros-abreviacao](Diagramas/GET-livros-abreviacao.png)
 
 
-#### Consulta de Versões da Bíblia
+#### [PAGINADO]Consulta de Versões da Bíblia
 - Controller: **VersoesController**
-- Endpoint: **GET** - `http://localhost:8090/jesus-api/versoes`
+- Endpoint: **GET** - `http://localhost:8090/jesus-api/versoes/{index}/{numeroItens}`
 
-- **Path Variable(s)**: NO_PATH_VARIABLES
+- **Path Variable(s)**:
+  - index - Integer - _Número da página_
+  - numeroItens - Integer - _Número de itens por página_
 
 - **Response**:
 ```json
@@ -192,3 +194,52 @@ Após isto alguns comandos que podem ser úteis:
 
 - Diagrama:
   ![GET-versos-versao-aleatorio](Diagramas/GET-versos-versao-aleatorio.png)
+
+
+#### [PAGINADO]Consulta de Versos por palavra
+- Controller: **VersosController**
+- Endpoint: **GET** - `http://localhost:8090/jesus-api/versos/pesquisa/{index}/{numeroItens}`
+
+- **Path Variable(s)**:
+  - index - Integer - _Número da página_
+  - numeroItens - Integer - _Número de itens por página_
+
+- **Request**:
+```json
+{
+  "versao": "nvi",
+  "palavra": "eliseu"
+}
+```
+
+- **Response**:
+```json
+{
+  "index": 0,
+  "numeroItens": 3,
+  "itens": [
+    {
+      "livro": {
+        "abreviacao": {
+          "portugues": "2rs",
+          "ingles": "2kgs"
+        },
+        "autor": "Jeremias",
+        "numeroCapitulos": 25,
+        "grupo": "Históricos",
+        "nome": "2º Reis",
+        "testamento": "VT"
+      },
+      "numeroCapitulo": 2,
+      "numeroVerso": 12,
+      "texto": "Quando viu isso, Eliseu gritou: \"Meu pai! Meu pai! Tu eras como os carros de guerra e os cavaleiros de Israel! \" E quando já não podia mais vê-lo, Eliseu pegou as próprias vestes e as rasgou ao meio."
+    },
+    {...}
+  ],
+  "primeiraPagina": true,
+  "ultimaPagina": false
+}
+```
+
+- Diagrama:
+  ![POST-versos-pesquisa-index-numero-itens](Diagramas/POST-versos-pesquisa-index-numero-itens.png)

@@ -18,6 +18,7 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -39,11 +40,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.request.ConsultaVersosPorPalavraBibliaDigitalRequest;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaCapituloBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivroBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivrosBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoAleatorioBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersosPorPalavraBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.service.support.MessageService;
 import lombok.SneakyThrows;
 
@@ -56,6 +59,7 @@ public class BibliaDigitalRestIntegrationTest {
     private static final String PATH_CONSULTA_CAPITULO = "/verses/%s/%s/%s";
     private static final String PATH_CONSULTA_LIVROS = "/books";
     private static final String PATH_CONSULTA_VERSO_ALEATORIO = "/verses/%s/random";
+    private static final String PATH_CONSULTA_VERSOS_POR_PALAVRA = "/verses/search";
     private static final String PATH_CONSULTA_VERSOES = "/versions";
 
     @InjectMocks
@@ -241,6 +245,40 @@ public class BibliaDigitalRestIntegrationTest {
         final HttpEntity<?> httpEntityCaptured = httpEntityCaptor.getValue();
         assertNotNull(httpEntityCaptured);
         assertNull(httpEntityCaptured.getBody());
+        assertHeaders(httpEntityCaptured.getHeaders());
+
+        assertNotNull(response);
+    }
+
+    @Test
+    @SneakyThrows
+    public void annotationCacheableConsultarVersosPorPalavra() {
+        Assert.assertTrue(bibliaDigitalRestIntegration.getClass()
+            .getDeclaredMethod("consultarVersosPorPalavra", ConsultaVersosPorPalavraBibliaDigitalRequest.class)
+            .isAnnotationPresent(Cacheable.class));
+    }
+
+    @Test
+    public void consultarVersosPorPalavraSucesso() {
+        final ConsultaVersosPorPalavraBibliaDigitalRequest request = make(new ConsultaVersosPorPalavraBibliaDigitalRequest());
+
+        final String urlExpected = url + PATH_CONSULTA_VERSOS_POR_PALAVRA;
+        final HttpMethod httpMethodExpected = POST;
+        final Class<ConsultaVersosPorPalavraBibliaDigitalResponse> responseClass = ConsultaVersosPorPalavraBibliaDigitalResponse.class;
+
+        final ResponseEntity<ConsultaVersosPorPalavraBibliaDigitalResponse> entityResponse = ok(new ConsultaVersosPorPalavraBibliaDigitalResponse());
+
+        when(restTemplate.exchange(eq(urlExpected), eq(httpMethodExpected), any(HttpEntity.class), eq(responseClass)))
+            .thenReturn(entityResponse);
+
+        final ConsultaVersosPorPalavraBibliaDigitalResponse response = bibliaDigitalRestIntegration.consultarVersosPorPalavra(request);
+
+        verify(restTemplate).exchange(eq(urlExpected), eq(httpMethodExpected), httpEntityCaptor.capture(), eq(responseClass));
+
+        final HttpEntity<?> httpEntityCaptured = httpEntityCaptor.getValue();
+        assertNotNull(httpEntityCaptured);
+        assertNotNull(httpEntityCaptured.getBody());
+        assertEquals(request, httpEntityCaptured.getBody());
         assertHeaders(httpEntityCaptured.getHeaders());
 
         assertNotNull(response);

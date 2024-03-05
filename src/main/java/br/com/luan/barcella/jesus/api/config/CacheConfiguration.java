@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
@@ -44,6 +45,7 @@ public class CacheConfiguration extends CachingConfigurerSupport {
             CacheName.CONSULTA_CAPITULO,
             CacheName.CONSULTA_LIVRO,
             CacheName.CONSULTA_LIVROS,
+            CacheName.CONSULTA_VERSOS_POR_PALAVRA,
             CacheName.CONSULTA_VERSOES
         );
 

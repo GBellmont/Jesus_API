@@ -16,11 +16,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import br.com.luan.barcella.jesus.api.domain.CacheName;
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.request.ConsultaVersosPorPalavraBibliaDigitalRequest;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaCapituloBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivroBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaLivrosBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoAleatorioBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersoesBibliaDigitalResponse;
+import br.com.luan.barcella.jesus.api.dto.external.biblia.digital.response.ConsultaVersosPorPalavraBibliaDigitalResponse;
 import br.com.luan.barcella.jesus.api.service.rest.AbstractRestApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,7 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
     private static final String PATH_CONSULTA_LIVRO = "/books/%s";
     private static final String PATH_CONSULTA_LIVROS = "/books";
     private static final String PATH_CONSULTA_VERSO_ALEATORIO = "/verses/%s/random";
+    private static final String PATH_CONSULTA_VERSOS_POR_PALAVRA = "/verses/search";
     private static final String PATH_CONSULTA_VERSOES = "/versions";
 
     @Value("${integration.biblia-digital.url}")
@@ -90,6 +93,15 @@ public class BibliaDigitalRestIntegration extends AbstractRestApiService {
         log.info("Realizando chamada para a API da bíblia digital, na url: {}", url);
 
         return this.getWithHeaders(url, this.getHttpHeaders(), ConsultaVersoAleatorioBibliaDigitalResponse.class);
+    }
+
+    @Cacheable(CacheName.CONSULTA_VERSOS_POR_PALAVRA)
+    public ConsultaVersosPorPalavraBibliaDigitalResponse consultarVersosPorPalavra(final ConsultaVersosPorPalavraBibliaDigitalRequest request) {
+        final String url = urlBibliaDigital + PATH_CONSULTA_VERSOS_POR_PALAVRA;
+
+        log.info("Realizando chamada para a API da bíblia digital, na url: {}", url);
+
+        return this.postWithHeaders(url, this.getHttpHeaders(), request, ConsultaVersosPorPalavraBibliaDigitalResponse.class);
     }
 
     private HttpHeaders getHttpHeaders() {
