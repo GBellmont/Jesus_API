@@ -15,6 +15,38 @@ server:
 spring:
   messages:
     basename: i18n/messages
+  redis:
+    url: ${REDIS_URL}
 
 key:
   final: ${KEY_FINAL:final}
+
+rest-template:
+  timeout:
+    connect: ${REST_TIMEOUT_CONNECT:5000} # 5 segundos em milissegundos
+    read: ${REST_TIMEOUT_READ:15000} # 15 segundos em milissegundos
+
+cache:
+  ttl:
+    livros:
+      consulta-livros: ${TTL_CACHE_CONSULTA_LIVROS:86400} # 1 dia em segundos
+      consulta-livro: ${TTL_CACHE_CONSULTA_LIVRO:86400} # 1 dia em segundos
+    versoes:
+      consulta-versoes: ${TTL_CACHE_CONSULTA_VERSOES:86400} # 1 dia em segundos
+    capitulos:
+      consulta-capitulo: ${TTL_CACHE_CONSULTA_CAPITULO:86400} # 1 dia em segundos
+    versos:
+      consulta:
+        por-palavra: ${TTL_CACHE_CONSULTA_VERSOS_POR_PALAVRA:86400} # 1 dia em segundos
+
+redis:
+  cache:
+    url: ${REDIS_URL}
+    #host: ${REDIS_CACHE_HOST:oregon-redis.render.com}
+    #password: ${REDIS_CACHE_PASSWORD:1ULJMXi5LGqsNZhrFF8YoBJY82DGjt4N}
+    #port: ${REDIS_CACHE_PORT:6379}
+
+integration:
+  biblia-digital:
+    url: ${URL_BIBLIA_DIGITAL:https://www.abibliadigital.com.br/api}
+    authorization-bearer-token: ${TOKEN_BIBLIA_DIGITAL:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHIiOiJTYXQgTWFyIDAyIDIwMjQgMTc6MTc6NTggR01UKzAwMDAubHVhbi5iYXJjZWxsYUBnbWFpbC5jb20iLCJpYXQiOjE3MDkzOTk4Nzh9.tMAOUB37veqIpUt_6ww6x4Nr8SbnHVXClGAMrWUuvG8}
