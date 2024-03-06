@@ -28,6 +28,16 @@ Após isto alguns comandos que podem ser úteis:
 
 ---
 
+### Collections
+
+A collections utilizadas em desenvolvimento para testes funcionais se encontram na pasta `/Collections`:
+- [POSTMAN_COLLECTION_V2](Collections/JESUS WEB APP.postman_collection_v2.json)
+- [POSTMAN_COLLECTION_V2.1](Collections/JESUS WEB APP.postman_collection_v2.1.json)
+
+**Obs:** foram colocadas as collections em `v2` e `v2.1` do Postman para evitar incompatibilidade de versão :)
+
+---
+
 ### Serviços
 
 #### [PAGINADO]Consulta de Livros da Bíblia

@@ -1,0 +1,544 @@
+{
+	"info": {
+		"_postman_id": "385ff8ea-21ae-4741-9dcf-93de12372be0",
+		"name": "JESUS WEB APP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21510510",
+		"_collection_link": "https://solar-equinox-372966.postman.co/workspace/My-Workspace~edb28678-f24d-4335-8f53-63626d543e8f/collection/21510510-385ff8ea-21ae-4741-9dcf-93de12372be0?action=share&source=collection_link&creator=21510510"
+	},
+	"item": [
+		{
+			"name": "BIBLIA_DIGITAL",
+			"item": [
+				{
+					"name": "LIVROS",
+					"item": [
+						{
+							"name": "Buscar Livros",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web_api}}/books",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Livro",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web_api}}/books/gn",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"books",
+										"gn"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "USUÁRIO",
+					"item": [
+						{
+							"name": "Criar Usuário",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"nome\",\r\n    \"email\": \"seu.email@gmail.com\",\r\n    \"password\": \"suaSenha02\", //Mínimo de 6 dígitos\r\n    \"notifications\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web_api}}/users",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Token Usuário",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"seu.email@gmail.com\",\r\n  \"password\": \"suaSenha02\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web_api}}/users/token",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"users",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Usuário",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_web_api}}/users/seu.email@gmail.com",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"users",
+										"seu.email@gmail.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Status Usuário",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_web_api}}/users/stats",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"users",
+										"stats"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Enviar Senha Usuário Email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url_web_api}}/users/password/seu.email@gmail.com",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"users",
+										"password",
+										"seu.email@gmail.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Usuário",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"seu.email@gmail.com\",\r\n  \"password\": \"suaSenha02\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web_api}}/users",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "VERSÕES",
+					"item": [
+						{
+							"name": "Buscar Versões",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web_api}}/versions",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"versions"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "VERSOS",
+					"item": [
+						{
+							"name": "Buscar Capitulo",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web_api}}/verses/nvi/gn/1",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"verses",
+										"nvi",
+										"gn",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Verso",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web_api}}/verses/nvi/gn/1/1",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"verses",
+										"nvi",
+										"gn",
+										"1",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verso Aleatório",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web_api}}/verses/nvi/random",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"verses",
+										"nvi",
+										"random"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verso Aleatório De Um Livro",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web_api}}/verses/nvi/gn/random",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"verses",
+										"nvi",
+										"gn",
+										"random"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Por Palavra",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"version\": \"nvi\",\r\n  \"search\": \"eliseu\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web_api}}/verses/search",
+									"host": [
+										"{{url_web_api}}"
+									],
+									"path": [
+										"verses",
+										"search"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "JESUS_API",
+			"item": [
+				{
+					"name": "LIVROS",
+					"item": [
+						{
+							"name": "[PAGINADO] Consultar Livros",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_local_api}}/livros/1/33",
+									"host": [
+										"{{url_local_api}}"
+									],
+									"path": [
+										"livros",
+										"1",
+										"33"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Livro Por Abreviação",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_local_api}}/livros/gn",
+									"host": [
+										"{{url_local_api}}"
+									],
+									"path": [
+										"livros",
+										"gn"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "VERSOES",
+					"item": [
+						{
+							"name": "[PAGINADO]Consultar Versões",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_local_api}}/versoes/1/3",
+									"host": [
+										"{{url_local_api}}"
+									],
+									"path": [
+										"versoes",
+										"1",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CAPITULOS",
+					"item": [
+						{
+							"name": "Consultar Capítulo",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_local_api}}/capitulos/nvi/gn/1",
+									"host": [
+										"{{url_local_api}}"
+									],
+									"path": [
+										"capitulos",
+										"nvi",
+										"gn",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "VERSOS",
+					"item": [
+						{
+							"name": "Consulta Verso Aleatório",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_local_api}}/versos/nvi/aleatorio",
+									"host": [
+										"{{url_local_api}}"
+									],
+									"path": [
+										"versos",
+										"nvi",
+										"aleatorio"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[PAGINADO] Consultar Versos Por Palavra",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"versao\": \"nvi\",\r\n    \"palavra\": \"eliseu\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_local_api}}/versos/pesquisa/0/3",
+									"host": [
+										"{{url_local_api}}"
+									],
+									"path": [
+										"versos",
+										"pesquisa",
+										"0",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url_web_api",
+			"value": "https://www.abibliadigital.com.br/api",
+			"type": "string"
+		},
+		{
+			"key": "url_local_api",
+			"value": "http://localhost:8090/jesus-api",
+			"type": "string"
+		},
+		{
+			"key": "bearer_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
