@@ -15,8 +15,9 @@ server:
 spring:
   messages:
     basename: i18n/messages
-  redis:
-    url: ${REDIS_URL}
+  data:
+    redis:
+      url: ${REDIS_URL:rediss://red-cnka297sc6pc73f8do2g:HO0P8Fg4BO68s64AOGFaLcwoVTouwWOb@singapore-redis.render.com:6379}
 
 key:
   final: ${KEY_FINAL:final}
@@ -41,7 +42,7 @@ cache:
 
 redis:
   cache:
-    url: ${REDIS_URL}
+    #url: ${REDIS_URL}
     #host: ${REDIS_CACHE_HOST:oregon-redis.render.com}
     #password: ${REDIS_CACHE_PASSWORD:1ULJMXi5LGqsNZhrFF8YoBJY82DGjt4N}
     #port: ${REDIS_CACHE_PORT:6379}
