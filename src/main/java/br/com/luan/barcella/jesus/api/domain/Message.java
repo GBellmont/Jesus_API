@@ -18,6 +18,10 @@ public enum Message {
 
     NUMERO_ITENS_INVALIDO("numero-itens.invalido"),
 
+    PALAVRA_INVALIDA("palavra.invalida"),
+
+    REQUEST_INVALIDA("request.invalida"),
+
     SERVICO_INDISPONIVEL("servico.indisponivel"),
 
     VERSAO_INVALIDA("versao.invalida");
