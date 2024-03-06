@@ -15,6 +15,8 @@ server:
 spring:
   messages:
     basename: i18n/messages
+  redis:
+    url: ${REDIS_URL}
 
 key:
   final: ${KEY_FINAL:final}
@@ -39,9 +41,10 @@ cache:
 
 redis:
   cache:
-    host: ${REDIS_CACHE_HOST:localhost}
-    password: ${REDIS_CACHE_PASSWORD:}
-    port: ${REDIS_CACHE_PORT:6379}
+    url: ${REDIS_URL}
+    #host: ${REDIS_CACHE_HOST:oregon-redis.render.com}
+    #password: ${REDIS_CACHE_PASSWORD:1ULJMXi5LGqsNZhrFF8YoBJY82DGjt4N}
+    #port: ${REDIS_CACHE_PORT:6379}
 
 integration:
   biblia-digital:
