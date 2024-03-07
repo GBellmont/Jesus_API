@@ -1,5 +1,6 @@
 package br.com.luan.barcella.jesus.api.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import br.com.luan.barcella.jesus.api.service.livros.ConsultaLivroService;
 import br.com.luan.barcella.jesus.api.service.livros.ConsultaLivrosService;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/livros")
