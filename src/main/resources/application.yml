@@ -17,7 +17,7 @@ spring:
     basename: i18n/messages
   data:
     redis:
-      url: ${REDIS_URL:rediss://red-cnka297sc6pc73f8do2g:HO0P8Fg4BO68s64AOGFaLcwoVTouwWOb@singapore-redis.render.com:6379}
+      url: ${REDIS_URL}
 
 key:
   final: ${KEY_FINAL:final}
